@@ -1,31 +1,36 @@
-const morgan = require("morgan")
-const express = require('express')
-const { db, page } = require("./models")
+const morgan = require("morgan");
+const express = require('express');
+const { db, page } = require("./models");
+const wiki= require('./routes/wiki.js');
+const user= require('./routes/user.js');
 
-const app = express()
-app.use(morgan("dev"))
+const app = express();
+app.use(morgan("dev"));
  
 
 
-app.use(express.static(__dirname + "public"))
-app.get(express.urlencoded)
+app.use(express.static(__dirname + "public"));
+app.use(express.urlencoded());
+app.use('/wiki', wiki);
 
 
 db.authenticate()
   .then (() => {
-    console.log("connected to the database")
-  })
+    console.log("connected to the database");
+  });
 
-app.get('/', (req, res) => {
-  res.send("Hello World")
-})
+app.get('/', (req, res, next) => {
+  res.redirect('/wiki');
+});
+
 
 app.use(function (err, req, res, next){
-  console.log(err.stack)
-  res.send("Error")
+  console.log(err.stack);
+  res.send("Error");
 })
 
-const PORT = 2020
+
+const PORT = 8080
 
 
 const init = async() => {
